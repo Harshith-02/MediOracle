@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 import { Header } from './components/layout/Header';
@@ -16,11 +16,27 @@ import { AuditTrail } from './pages/admin/AuditTrail';
 
 const ProtectedLayout: React.FC = () => {
   const { isAuthenticated, isLoading, activeRole } = useAuthStore();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('medioracle_sidebar_collapsed') === 'true';
+  });
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem('medioracle_sidebar_collapsed', String(next));
+      return next;
+    });
+  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 font-mono">
-        Initializing MediOracle Platform...
+        <div className="flex flex-col items-center space-y-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/25 animate-pulse">
+            M
+          </div>
+          <span className="text-xs text-cyan-400 font-medium">Initializing MediOracle Platform...</span>
+        </div>
       </div>
     );
   }
@@ -30,11 +46,17 @@ const ProtectedLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
-      <Header />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto bg-slate-950">
+    <div className="h-screen w-screen flex overflow-hidden bg-slate-950 text-slate-100 antialiased">
+      {/* 1. SEPARATE FULL-HEIGHT NAVIGATION SIDEBAR */}
+      <Sidebar isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
+
+      {/* 2. MAIN WEBSITE & WORKSPACE CONTAINER */}
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-[#070b14] relative">
+        {/* Main Website Header */}
+        <Header isSidebarCollapsed={isSidebarCollapsed} toggleSidebar={toggleSidebar} />
+
+        {/* Scrollable Main Website Canvas */}
+        <main className="flex-1 overflow-y-auto bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(6,182,212,0.06),rgba(2,6,23,0))]">
           <Routes>
             {/* Facility Routes */}
             <Route path="/facility/dashboard" element={<FacilityDashboard />} />

@@ -115,10 +115,15 @@ export const ShiftDetail: React.FC = () => {
         <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center">
-                <Sparkles className="w-4 h-4 mr-2 text-cyan-400" /> AI Ranked Candidate Engine
-              </h2>
-              <p className="text-xs text-slate-400">Deterministic scoring algorithm based on distance, availability, credentials & rating</p>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center">
+                  <Sparkles className="w-4 h-4 mr-2 text-cyan-400" /> AI Ranked Candidate Engine
+                </h2>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  XGBoost ML Model
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">Gradient Boosted Trees evaluating clinical affinity, commute distance, compliance & reliability</p>
             </div>
             <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded border border-cyan-500/20">
               {candidates.length} Candidates Evaluated
